@@ -41,6 +41,22 @@ app.add_middleware(
     allow_headers=["*"],  # Cho phép tất cả các header
 )
 
+
+@app.get("/health")
+async def health():
+    """Health check endpoint.
+
+    Returns 200 OK and JSON {"status": "ok"} when the app can reach MongoDB.
+    If the database is unavailable, returns 503 with error details.
+    """
+    try:
+        # Ping MongoDB to check connectivity
+        await client.admin.command("ping")
+        return {"status": "ok"}
+    except Exception as e:
+        # If DB ping fails, return 503 Service Unavailable
+        return JSONResponse(status_code=503, content={"status": "fail", "detail": str(e)})
+
 MONGO_URI = os.getenv('MONGODB_DATA_API',"mongodb://localhost:27017/")  
 DATABASE_NAME = os.getenv('MONGODB_DATA_DB',"CNPM_truyentranh_db")
 comic = "comic"
