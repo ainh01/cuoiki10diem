@@ -13,9 +13,8 @@ RUN npm i
 # Copy application files
 COPY . .
 
-#dskljfdklsj# Expose podrt (adjust if your app uses a different port)
+# Expose port (adjust if your app uses a different port)
 EXPOSE 3000
 
 # Start the application
 CMD ["npm", "run", "serve"]
-

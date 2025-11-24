@@ -24,7 +24,6 @@ db_name_str = os.getenv('DB_NAME', 'otruyen_db')
 
 client = MongoClient(mongo_uri_str)
 db = client[db_name_str]
-client.admin.command('ping')
 
 # Collections
 comics_collection = db['comics']
@@ -614,3 +613,15 @@ async def get_chapter_images(chapter_id: str):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
+
+
+# Health check endpoint
+@app.get("/health")
+async def health_check():
+    """Simple health check that verifies the app and database connection."""
+    try:
+        # make a light DB ping to verify Mongo is reachable
+        client.admin.command("ping")
+        return JSONResponse(status_code=200, content={"status": "ok", "db": True})
+    except Exception as e:
+        return JSONResponse(status_code=503, content={"status": "unhealthy", "db": False, "error": str(e)})
