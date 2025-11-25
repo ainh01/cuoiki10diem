@@ -47,6 +47,7 @@ jobs:
     - name: Build and push Docker image
       working-directory: ./Services/api_otruyen
       run: |
+        set -xe
         docker build --build-arg MONGODB_URI=${{ secrets.MONGODB_URI }} --build-arg DB_NAME=${{ secrets.DB_NAME }} -t ${{ secrets.ACR_SERVER }}/api-otruyen:${{ github.sha }} .
         docker tag ${{ secrets.ACR_SERVER }}/api-otruyen:${{ github.sha }} ${{ secrets.ACR_SERVER }}/api-otruyen:latest
         docker push ${{ secrets.ACR_SERVER }}/api-otruyen:${{ github.sha }}
