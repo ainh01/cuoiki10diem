@@ -18,3 +18,8 @@ spec:
         image: webtruyenacr2855.azurecr.io/api-otruyen:d39ba7cf9dd9fae20acdaed0989841b229e505a3
         ports:
         - containerPort: 8001
+        env:
+        - name: MONGODB_URI
+          value: "mongodb+srv://ainh01:Bb1234567890!@ainh.global.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000"
+        - name: DB_NAME
+          value: "otruyen_db"
