@@ -42,14 +42,11 @@ jobs:
         registry: ${{ secrets.ACR_SERVER }}
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
-
+    
     - name: Build and push Docker image
       working-directory: ./Services/api_otruyen
       run: |
-        docker build \
-          --build-arg MONGODB_URI=${{ secrets.MONGODB_URI }} \
-          --build-arg DB_NAME=${{ secrets.DB_NAME }} \
-          -t ${{ secrets.ACR_SERVER }}/api-otruyen:${{ github.sha }} .
+        docker build --build-arg MONGODB_URI=${{ secrets.MONGODB_URI }} --build-arg DB_NAME=${{ secrets.DB_NAME }} -t ${{ secrets.ACR_SERVER }}/api-otruyen:${{ github.sha }} .
         docker tag ${{ secrets.ACR_SERVER }}/api-otruyen:${{ github.sha }} ${{ secrets.ACR_SERVER }}/api-otruyen:latest
         docker push ${{ secrets.ACR_SERVER }}/api-otruyen:${{ github.sha }}
         docker push ${{ secrets.ACR_SERVER }}/api-otruyen:latest
