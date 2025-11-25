@@ -3,6 +3,8 @@ kind: Ingress
 metadata:
   name: ui-admin
   namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   ingressClassName: nginx
   rules:
