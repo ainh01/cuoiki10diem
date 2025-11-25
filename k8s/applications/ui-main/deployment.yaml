@@ -18,3 +18,14 @@ spec:
         image: webtruyenacr2855.azurecr.io/ui-main:2cdcf871d5f9bb8eea63b6d6751a373a69dca1e3
         ports:
         - containerPort: 3000
+        env:
+        - name: HOST
+          value: "0.0.0.0"
+        - name: PORT
+          value: "3000"
+        - name: VITE_API_BASE_URL
+          value: "http://4.230.96.180/api/datatruyen/"
+        - name: VITE_OTRUYEN_API_BASE_URL
+          value: "http://4.230.96.180/api/otruyen/"
+        - name: VITE_APP_ENV
+          value: "development"
