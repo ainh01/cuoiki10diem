@@ -18,7 +18,7 @@ export default {
   methods: {
     async login() {
       try {
-        const response = await axios.post(`${API_BASE_URL}/login/`, {
+        const response = await axios.post(`${API_BASE_URL}login/`, {
           email: this.email,
           password: this.password,
         });
@@ -39,7 +39,7 @@ export default {
           return;
         }
 
-        const response = await axios.post(`${API_BASE_URL}/register/`, {
+        const response = await axios.post(`${API_BASE_URL}register/`, {
           username: this.username,
           email: this.email,  // Pass email here
           password: this.password,
