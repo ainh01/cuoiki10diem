@@ -18,47 +18,42 @@ const isLoggedIn = ref<boolean>(false);
 
 // Ensure `localStorage` is only accessed on the client-side
 onMounted(async () => {
-  try {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      token.value = localStorage.getItem("token");
-      
-      if (token.value) {
-        const response = await axios.get(`${API_BASE_URL}user/`, {
-          headers: {
-            Authorization: `Bearer ${token.value}`,
-          },
-        });
+  // Thêm delay để chắc chắn token đã được lưu
+  setTimeout(async () => {
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const token = localStorage.getItem("token");
+        console.log("Retrieved token from localStorage:", token);
+        
+        if (token) {
+          const response = await axios.get(`${API_BASE_URL}user/`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
 
-        if (response && response.data) {
-          userInfo.value = response.data;
-          saveUserInfoToLocalStorage(response.data, 10000);
-          isLoggedIn.value = true;  // Đánh dấu đã đăng nhập
-          console.log(response.data);
+          if (response && response.data) {
+            userInfo.value = response.data;
+            saveUserInfoToLocalStorage(response.data, 10000);
+            isLoggedIn.value = true;
+            console.log("User info:", response.data);
+          }
         } else {
-          // Nếu không có response data (không có tài khoản đăng nhập)
           isLoggedIn.value = false;
-          console.error("Không có thông tin người dùng trong phản hồi.");
+          console.log("No token found in localStorage");
         }
-      } else {
-        // Trường hợp không có token trong localStorage
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response && error.response.status === 401) {
+        localStorage.removeItem("token");
         isLoggedIn.value = false;
-        console.error("Không có token, không thể lấy thông tin người dùng.");
+        console.error("Token invalid or expired");
+      } else {
+        isLoggedIn.value = false;
+        console.error("Error fetching user info:", error);
       }
     }
-  } catch (error) {
-    // Kiểm tra lỗi 401 (Unauthorized)
-    if (axios.isAxiosError(error) && error.response && error.response.status === 401) {
-      localStorage.removeItem("token");  // Xóa token khi không hợp lệ
-      isLoggedIn.value = false;
-      console.error("Token không hợp lệ hoặc đã hết hạn. Vui lòng đăng nhập lại.");
-      // Chuyển hướng đến trang đăng nhập (nếu có)
-      // router.push("/login");  // Nếu bạn đang sử dụng Vue Router
-    } else {
-      // Xử lý các lỗi khác
-      isLoggedIn.value = false;
-      console.error("Lỗi khi lấy thông tin người dùng:", error);
-    }
-  }
+  }, 200); // Delay 200ms
 });
 
 

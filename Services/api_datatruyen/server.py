@@ -24,7 +24,8 @@ import os
 from model import User, UserInDB, UserLogin, UserInfo, UserResponse, UserActive, HomeForClient, FavoriteForUser, HistoryComicRequest
 
 # Generate a random 32-byte key and convert it to a hexadecimal string
-SECRET_KEY = secrets.token_hex(32)
+# SECRET_KEY = secrets.token_hex(32)
+SECRET_KEY = "ADBiP0pXFnN1AjdJrbM4VjIl14QmIHFZ"
 ALGORITHM = "HS256"  # Algorithm used for signing the JWT (HMAC SHA-256)
 ACCESS_TOKEN_EXPIRE_MINUTES = 300  # Token expiry time in minutes  
 
