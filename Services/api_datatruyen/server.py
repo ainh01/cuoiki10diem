@@ -36,7 +36,13 @@ app = FastAPI(
     title="Datatruyen API",
     description="API Description",
     version="1.0.0",
-    root_path="/api/datatruyen" 
+    root_path="/api/datatruyen",
+    servers=[
+        {
+            "url": "/api/datatruyen",
+            "description": "Local server"
+        }
+    ] 
 )
 
 app.add_middleware(
@@ -150,6 +156,13 @@ def custom_openapi():
         description="API Description",
         routes=app.routes,
     )
+    
+    openapi_schema["servers"] = [
+        {
+            "url": "/api/datatruyen",
+            "description": "Local server with root path"
+        }
+    ]
     
     # Thêm security scheme manual
     openapi_schema["components"]["securitySchemes"] = {
