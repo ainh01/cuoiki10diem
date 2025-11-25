@@ -24,8 +24,8 @@ spec:
         - name: PORT
           value: "3000"
         - name: VITE_API_BASE_URL
-          value: "http://4.230.96.180/api/otruyen/"
-        - name: VITE_OTRUYEN_API_BASE_URL
           value: "http://4.230.96.180/api/datatruyen/"
+        - name: VITE_OTRUYEN_API_BASE_URL
+          value: "http://4.230.96.180/api/otruyen/"
         - name: VITE_APP_ENV
           value: "development"
