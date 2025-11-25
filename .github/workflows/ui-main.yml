@@ -9,6 +9,7 @@ on:
     branches: [ main ]
     paths:
       - 'Services/ui_main/**'
+  workflow_dispatch:
 
 permissions:
   contents: write
