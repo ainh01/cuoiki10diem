@@ -19,7 +19,7 @@ onMounted(async () => {
     try {
 
       //Lấy dữ liệu truyện yêu thích
-      const response  = await axios.get(`${API_BASE_URL}/get_favorite_list`, {
+      const response  = await axios.get(`${API_BASE_URL}get_favorite_list`, {
         params: {
           email: userInfo.value.email,
         },
@@ -35,7 +35,7 @@ onMounted(async () => {
 
 
       //Lấy dữ liệu lịch sử đọc truyện
-      const responseHistory = await axios.get(`${API_BASE_URL}/get_history_comics`, {
+      const responseHistory = await axios.get(`${API_BASE_URL}get_history_comics`, {
         params: {
           email: userInfo.value?.email,
         },

@@ -69,7 +69,7 @@ const handleLogout = async () => {
       return;
     }
 
-    await axios.post(`${API_BASE_URL}/logout/`, {}, {
+    await axios.post(`${API_BASE_URL}logout/`, {}, {
       headers: {
         Authorization: `Bearer ${token.value}`,
       },

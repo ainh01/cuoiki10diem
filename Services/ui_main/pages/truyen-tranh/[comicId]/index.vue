@@ -101,7 +101,7 @@ const toggleFavorite = async () => {
 
   try {
     // Send a request to toggle favorite status
-    const response = await axios.post(`${API_BASE_URL}/set_favorite_client`, {
+    const response = await axios.post(`${API_BASE_URL}set_favorite_client`, {
       email: userInfo.value.email,
       id_comic: comicId,
       status: !isFavorite.value, // Toggle the status
@@ -231,7 +231,7 @@ const handleDownloadChapters = async () => {
 
     // Gửi yêu cầu POST với query string comic_id và dữ liệu là mảng các chapter_ids
     const response = await axios.post(
-      `${API_BASE_URL}/download_comic?comic_id=${comicId}`,
+      `${API_BASE_URL}download_comic?comic_id=${comicId}`,
       requestData,
       {
         headers: {
@@ -279,7 +279,7 @@ const addHistoryComic = (chapter_name : string) => {
   console.log("Payload being sent:", payload);
 
   axios
-    .post(`${API_BASE_URL}/set_history_comics`, payload)
+    .post(`${API_BASE_URL}set_history_comics`, payload)
     .then((response) => {
       console.log("Response:", response.data);
     })
