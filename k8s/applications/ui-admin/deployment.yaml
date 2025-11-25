@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - name: ui-admin
-        image: webtruyenacr2855.azurecr.io/ui-admin:latest
+        image: webtruyenacr2855.azurecr.io/ui-admin:f221ee9a46dba1480fbbdc38d2f4432edf4c1bf3
         ports:
         - containerPort: 3000
