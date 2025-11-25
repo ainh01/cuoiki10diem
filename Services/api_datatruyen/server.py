@@ -115,8 +115,20 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         email: str = payload.get("sub")
         if email is None:
             raise credentials_exception
+        
+        # Tìm user trong database
+        db_user = await users_collection.find_one({"email": email})
+        if db_user is None:
+            raise credentials_exception
+        
         return email
-    except JWTError:
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token has expired.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    except jwt.JWTError:
         raise credentials_exception
 
 @app.post("/register/")
