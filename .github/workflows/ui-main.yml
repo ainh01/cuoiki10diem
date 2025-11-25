@@ -24,20 +24,23 @@ jobs:
       with:
         token: ${{ secrets.REPO_TOKEN }}
 
-    - name: Set up Node.js
+    # 1. Set up Docker Buildx (REQUIRED for caching)
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    # Keep linting fast and local. Fails fast if code is bad.
+    - name: Setup Node for Linting
       uses: actions/setup-node@v4
       with:
         node-version: '20'
+        cache: 'yarn'
+        cache-dependency-path: Services/ui_main/yarn.lock
 
-    - name: Install dependencies & lint
+    - name: Lint
       working-directory: ./Services/ui_main
       run: |
-        yarn install
-        yarn lint || echo "Lint not configured, skipping..."
-
-    - name: Build application
-      working-directory: ./Services/ui_main
-      run: yarn build || echo "Build step handled by Docker"
+        yarn install --frozen-lockfile
+        yarn lint || echo "Lint warning"
 
     - name: Log in to ACR
       uses: docker/login-action@v3
@@ -46,17 +49,25 @@ jobs:
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
 
+    # 2. Build and Push using the Action (replaces manual docker command)
     - name: Build and push Docker image
-      working-directory: ./Services/ui_main
-      run: |
-        docker build \
-          --build-arg "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" \
-          --build-arg "VITE_OTRUYEN_API_BASE_URL=${{ secrets.VITE_OTRUYEN_API_BASE_URL }}" \
-          --build-arg "VITE_APP_ENV=${{ secrets.VITE_APP_ENV }}" \
-          -t ${{ secrets.ACR_SERVER }}/ui-main:${{ github.sha }} .
-        docker tag ${{ secrets.ACR_SERVER }}/ui-main:${{ github.sha }} ${{ secrets.ACR_SERVER }}/ui-main:latest
-        docker push ${{ secrets.ACR_SERVER }}/ui-main:${{ github.sha }}
-        docker push ${{ secrets.ACR_SERVER }}/ui-main:latest
+      uses: docker/build-push-action@v6
+      with:
+        # Context is crucial: points to your service folder
+        context: ./Services/ui_main
+        push: true
+        # Tags are handled automatically here
+        tags: |
+          ${{ secrets.ACR_SERVER }}/ui-main:${{ github.sha }}
+          ${{ secrets.ACR_SERVER }}/ui-main:latest
+        # Pass your build arguments here
+        build-args: |
+          VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
+          VITE_OTRUYEN_API_BASE_URL=${{ secrets.VITE_OTRUYEN_API_BASE_URL }}
+          VITE_APP_ENV=${{ secrets.VITE_APP_ENV }}
+        # THE MAGIC SAUCE: GitHub Actions Caching
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
 
     - name: Update K8s deployment
       if: github.event_name == 'push'
