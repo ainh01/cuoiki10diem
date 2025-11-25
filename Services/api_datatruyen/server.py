@@ -1,5 +1,5 @@
 import logging
-from fastapi import FastAPI, HTTPException, Depends, status, Form
+from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.responses import JSONResponse, StreamingResponse
@@ -102,30 +102,9 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-def serialize_user(user_dict):
-    """Convert MongoDB document to JSON serializable format"""
-    if not user_dict:
-        return user_dict
-    
-    # Create a copy to avoid modifying the original
-    result = user_dict.copy()
-    
-    # Convert ObjectId to string
-    if '_id' in result:
-        result['_id'] = str(result['_id'])
-    
-    # Convert datetime to ISO format string if needed
-    if 'created_at' in result and isinstance(result['created_at'], datetime):
-        result['created_at'] = result['created_at'].isoformat()
-    
-    if 'updated_at' in result and isinstance(result['updated_at'], datetime):
-        result['updated_at'] = result['updated_at'].isoformat()
-    
-    return result
-
 oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="/api/datatruyen/login/",
-    scopes={}
+    tokenUrl="",
+    auto_error=True
 )
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
@@ -172,24 +151,15 @@ async def register(user: User):
     return {"message": "Registration successful!"}
 
 @app.post("/login/")
-async def login(
-    username: str = Form(None),  # Swagger UI gửi username nhưng chúng ta dùng email
-    password: str = Form(...),
-    grant_type: str = Form(None),
-    email: str = Form(...)  # Thêm email field
-):
-    # Sử dụng email từ form data
-    db_user = await users_collection.find_one({"email": email})
+async def login(user: UserLogin):
+    db_user = await users_collection.find_one({"email": user.email})
     
-    if not db_user or not verify_password(password, db_user["hashed_password"]):
+    if not db_user or not verify_password(user.password, db_user["hashed_password"]):
         raise HTTPException(status_code=400, detail="Invalid email or password.")
     if not db_user.get("active", False):
         raise HTTPException(status_code=403, detail="Account loss access.")
     
     token = create_access_token(data={"sub": db_user["email"]})
-    
-    # Serialize user data
-    db_user = serialize_user(db_user)
     
     return {
         "message": "Login successful!",
