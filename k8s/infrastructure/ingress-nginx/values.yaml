@@ -1,6 +1,15 @@
 controller:
   service:
     type: LoadBalancer
+    # 1. This is critical for Azure. It prevents timeouts by sending traffic 
+    #    ONLY to nodes that are actually running the Nginx pod.
+    externalTrafficPolicy: Local
+    
+    # 2. These annotations tell Azure exactly how to check if Nginx is alive.
+    annotations:
+      service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: /healthz
+      service.beta.kubernetes.io/azure-load-balancer-health-probe-port: "10254"
+  
   ingressClassResource:
     name: nginx
     enabled: true
