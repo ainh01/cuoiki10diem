@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: ui-main
-        image: webtruyenacr2855.azurecr.io/ui-main:8324a65a3a14c7d2274d223c980f220911fe4ede
+        image: webtruyenacr2855.azurecr.io/ui-main:7ec01fa61558dbfe84eaa48940b5e692040b1394
         ports:
         - containerPort: 3000
         env:
