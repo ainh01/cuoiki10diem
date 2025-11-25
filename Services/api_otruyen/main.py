@@ -8,7 +8,12 @@ import os
 from datetime import datetime
 import math
 
-app = FastAPI(title="OTruyen API", version="1.0.0")
+app = FastAPI(
+    title="Datatruyen API",
+    description="API Description",
+    version="1.0.0",
+    root_path="/api/otruyen"
+)
 
 # CORS middleware
 app.add_middleware(
