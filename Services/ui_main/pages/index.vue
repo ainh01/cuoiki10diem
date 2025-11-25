@@ -3,11 +3,13 @@ import { meta } from '@/utils/data';
 import axios from 'axios';
 
 
-  
+
+
 const MyAPI = axios.create({
-  baseURL: "http://4.230.96.180/api/otruyen/",
+  baseURL: 'http://4.230.96.180/api/otruyen/',
   headers: {
     'Content-Type': 'application/json',
+    'Authorization': ``
   },
 });
 
