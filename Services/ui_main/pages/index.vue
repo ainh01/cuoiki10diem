@@ -1,7 +1,25 @@
 <script lang="ts" setup>
 import { meta } from '@/utils/data';
 
-// Fetch all data using consistent useFetdfdfchData met hod
+const extractComicsData = (response: any) => {
+  if (!response) return [];
+  
+  if (response.items && Array.isArray(response.items)) {
+    return response.items;
+  }
+  
+  if (response.data?.items && Array.isArray(response.data.items)) {
+    return response.data.items;
+  }
+  
+  if (Array.isArray(response)) {
+    return response;
+  }
+  
+  return [];
+};
+
+// Fetch all data with error handling
 const [
   homeClientResponse,
   ancientComicsResponse,
@@ -11,23 +29,23 @@ const [
   animeComicsResponse,
   reincarnationComicsResponse,
 ] = await Promise.all([
-  useFetchData('/home_client'),
-  useFetchData('/the-loai/co-dai'),
-  useFetchData('/the-loai/action'),
-  useFetchData('/the-loai/adult'),
-  useFetchData('/the-loai/adventure'),
-  useFetchData('/the-loai/anime'),
-  useFetchData('/the-loai/chuyen-sinh'),
+  useFetchData('/home_client').catch(() => null),
+  useFetchData('/the-loai/co-dai').catch(() => null),
+  useFetchData('/the-loai/action').catch(() => null),
+  useFetchData('/the-loai/adult').catch(() => null),
+  useFetchData('/the-loai/adventure').catch(() => null),
+  useFetchData('/the-loai/anime').catch(() => null),
+  useFetchData('/the-loai/chuyen-sinh').catch(() => null),
 ]);
 
-// Extract the actual comic data from the responses
-const homeClientComics = homeClientResponse.items;
-const ancientComics = ancientComicsResponse.data.items;
-const actionComics = actionComicsResponse.data.items;
-const adultComics = adultComicsResponse.data.items;
-const adventureComics = adventureComicsResponse.data.items;
-const animeComics = animeComicsResponse.data.items;
-const reincarnationComics = reincarnationComicsResponse.data.items;
+// Extract comic data safely
+const homeClientComics = extractComicsData(homeClientResponse);
+const ancientComics = extractComicsData(ancientComicsResponse);
+const actionComics = extractComicsData(actionComicsResponse);
+const adultComics = extractComicsData(adultComicsResponse);
+const adventureComics = extractComicsData(adventureComicsResponse);
+const animeComics = extractComicsData(animeComicsResponse);
+const reincarnationComics = extractComicsData(reincarnationComicsResponse);
 
 useSeoMeta(meta());
 useServerSeoMeta(meta());
@@ -72,7 +90,7 @@ useServerSeoMeta(meta());
     
     <ComicsSlide
       title="Cổ Đại"
-      :comics="homeClientComics"
+      :comics="ancientComics"
       icon=""
       link="/the-loai/co-dai"
     />
@@ -102,7 +120,7 @@ useServerSeoMeta(meta());
     />
     <ComicsSlide
       title="Chuyển sinh"
-      :comics="reincarnationComicsResponse"
+      :comics="reincarnationComics"
       icon=""
       link="/the-loai/chuyen-sinh"
     />
