@@ -8,8 +8,8 @@ spec:
   rules:
   - http:
       paths:
-      - path: /admin
-        pathType: Prefix
+      - path: /admin(/|$)(.*)
+        pathType: ImplementationSpecific
         backend:
           service:
             name: ui-admin
