@@ -1,19 +1,9 @@
 <script lang="ts" setup>
 import { meta } from '@/utils/data';
-import axios from 'axios';
 
-
-
-
-const MyAPI = axios.create({
-  baseURL: 'http://4.230.96.180/api/otruyen/',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': ``
-  },
-});
-
+// Fetch all data using consistent useFetchData method
 const [
+  homeClientResponse,
   ancientComicsResponse,
   actionComicsResponse,
   adultComicsResponse,
@@ -21,6 +11,7 @@ const [
   animeComicsResponse,
   reincarnationComicsResponse,
 ] = await Promise.all([
+  useFetchData('/home_client'),
   useFetchData('/the-loai/co-dai'),
   useFetchData('/the-loai/action'),
   useFetchData('/the-loai/adult'),
@@ -29,11 +20,8 @@ const [
   useFetchData('/the-loai/chuyen-sinh'),
 ]);
 
-const responseTest = await MyAPI.get('/home_client');
-// console.log(responseTest)
-const dataTest = responseTest.data.items
-
 // Extract the actual comic data from the responses
+const homeClientComics = homeClientResponse.items;
 const ancientComics = ancientComicsResponse.data.items;
 const actionComics = actionComicsResponse.data.items;
 const adultComics = adultComicsResponse.data.items;
@@ -46,7 +34,7 @@ useServerSeoMeta(meta());
 </script>
 
 <template>
-  <main class="max-w-6xl mx-auto py-5 px-3 ">
+  <main class="max-w-6xl mx-auto py-5 px-3">
     <Swiper
       :slides-per-view="6"
       :loop="true"
@@ -77,13 +65,14 @@ useServerSeoMeta(meta());
         },
       }"
     >
-      <SwiperSlide v-for="comic in adventureComics" :key="comic.item">
+      <SwiperSlide v-for="comic in adventureComics" :key="comic._id">
         <ComicCard :comic="comic" :detail="false" />
       </SwiperSlide>
     </Swiper>
+    
     <ComicsSlide
       title="Cổ Đại"
-      :comics="dataTest"
+      :comics="homeClientComics"
       icon=""
       link="/the-loai/co-dai"
     />
@@ -113,7 +102,7 @@ useServerSeoMeta(meta());
     />
     <ComicsSlide
       title="Chuyển sinh"
-      :comics="reincarnationComics"
+      :comics="reincarnationComicsResponse"
       icon=""
       link="/the-loai/chuyen-sinh"
     />

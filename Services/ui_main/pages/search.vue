@@ -1,21 +1,11 @@
 <script lang="ts" setup>
 import { Comic } from 'types';
 
-let comics = ref<Comic[]>([]);
+const comics = ref<Comic[]>([]);
 const query = ref<string>('');
 const isFetching = ref<boolean>(true);
 const totalPages = ref<number>(1);
 const currentPage = ref<number>(1);
-
-// 🔍 DEBUG INFO
-const debugInfo = ref({
-  baseURL: '',
-  endpoint: '',
-  fullUrl: '',
-  response: null,
-  error: null,
-  timestamp: ''
-});
 
 const route = useRoute();
 const router = useRouter();
@@ -24,34 +14,14 @@ const getSearchComics = async () => {
   try {
     isFetching.value = true;
     
-    const config = useRuntimeConfig();
     const endpoint = `/tim-kiem?keyword=${query.value}&page=${currentPage.value}`;
-    
-    // 🔍 CAPTURE DEBUG INFO
-    debugInfo.value = {
-      baseURL: config.public.baseURL,
-      endpoint: endpoint,
-      fullUrl: `${config.public.baseURL}${endpoint}`,
-      response: null,
-      error: null,
-      timestamp: new Date().toISOString()
-    };
-
-    console.log('🔍 REQUEST:', debugInfo.value);
-
     const data = await useFetchData(endpoint);
     
-    // 🔍 CAPTURE RESPONSE
-    debugInfo.value.response = data;
-    console.log('✅ RESPONSE:', data);
-    
-    // ✅ FIX: Use .value
     comics.value = data.data.items;
     totalPages.value = data?.total_pages;
     
   } catch (err) {
-    console.error('❌ ERROR:', err);
-    debugInfo.value.error = err;
+    console.error('Error fetching search results:', err);
   } finally {
     isFetching.value = false;
   }
@@ -66,13 +36,12 @@ const handleChangePage = (page: number) => {
   router.replace({ query: { ...route.query, page } });
 };
 
-watch(route, async (route) => {
+watch(route, async (newRoute) => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  query.value = route.query.keyword as string;
-  currentPage.value = route.query.page ? Number(route.query.page) : 1;
+  query.value = newRoute.query.keyword as string;
+  currentPage.value = newRoute.query.page ? Number(newRoute.query.page) : 1;
   await getSearchComics();
 });
-
 </script>
 
 <template>
@@ -81,32 +50,6 @@ watch(route, async (route) => {
     <Meta name="description" content="Free comic and manga reader online" />
   </Head>
   <main class="max-w-6xl mx-auto min-h-screen py-6 px-3">
-    
-    <!-- 🔍 DEBUG PANEL -->
-    <div class="bg-yellow-100 border-2 border-yellow-500 p-4 mb-6 rounded-lg">
-      <h2 class="text-xl font-bold mb-2">🔍 DEBUG INFO</h2>
-      <div class="space-y-2 text-sm font-mono">
-        <p><strong>Base URL:</strong> <span class="text-purple-600">{{ debugInfo.baseURL }}</span></p>
-        <p><strong>Endpoint:</strong> <span class="text-blue-600">{{ debugInfo.endpoint }}</span></p>
-        <p><strong>Full URL:</strong> <span class="text-green-600">{{ debugInfo.fullUrl }}</span></p>
-        <p><strong>Expected:</strong> <span class="text-red-600">/api/otruyen/tim-kiem?keyword={{ query }}&page={{ currentPage }}</span></p>
-        <p><strong>Query:</strong> {{ query }}</p>
-        <p><strong>Page:</strong> {{ currentPage }}</p>
-        <p><strong>Total Pages:</strong> {{ totalPages }}</p>
-        <p><strong>Comics:</strong> {{ comics.length }}</p>
-        
-        <details class="mt-2">
-          <summary class="cursor-pointer font-bold text-blue-600">📦 Raw Response</summary>
-          <pre class="bg-white p-2 rounded mt-2 overflow-auto max-h-60">{{ JSON.stringify(debugInfo.response, null, 2) }}</pre>
-        </details>
-        
-        <details v-if="debugInfo.error" class="mt-2">
-          <summary class="cursor-pointer font-bold text-red-600">❌ Error</summary>
-          <pre class="bg-white p-2 rounded mt-2 overflow-auto">{{ debugInfo.error }}</pre>
-        </details>
-      </div>
-    </div>
-
     <div class="flex items-center flex-wrap gap-1 text-gray-500 font-bold text-lg">
       <NuxtLink to="/">Home</NuxtLink>
       <Icon name="icon-park:right" size="16" />
