@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - name: api-otruyen
-        image: webtruyenacr2855.azurecr.io/api-otruyen:latest
+        image: webtruyenacr2855.azurecr.io/api-otruyen:d39ba7cf9dd9fae20acdaed0989841b229e505a3
         ports:
         - containerPort: 8001
