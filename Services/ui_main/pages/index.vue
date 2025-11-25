@@ -2,8 +2,10 @@
 import { meta } from '@/utils/data';
 import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  
 const MyAPI = axios.create({
-  baseURL: 'http://134.185.90.103:8080/',
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
     'Authorization': ``
