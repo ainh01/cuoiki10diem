@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Comic } from 'types';
-
+// sdfd
 const comics = ref<Comic[]>([]);
 const query = ref<string>('');
 const isFetching = ref<boolean>(true);

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { meta } from '@/utils/data';
 
-// Fetch all data using consistent useFetchData method
+// Fetch all data using consistent useFetchData met hod
 const [
   homeClientResponse,
   ancientComicsResponse,
