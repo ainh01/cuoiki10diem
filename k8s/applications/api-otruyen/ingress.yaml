@@ -5,6 +5,9 @@ metadata:
   namespace: default
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
+    # --- ADD THIS LINE BELOW ---
+    nginx.ingress.kubernetes.io/x-forwarded-prefix: "/api/otruyen"
+    # ---------------------------
 spec:
   ingressClassName: nginx
   rules:
