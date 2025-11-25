@@ -22,11 +22,11 @@ export default {
           email: this.email,
           password: this.password,
         });
-        // console.log("token:", response.data.token);
+        console.log("token:", response.data.token);
         // Lưu token vào localStorage
         localStorage.setItem('token', response.data.token);
 
-        // window.location.href = "/";
+        window.location.href = "/";
       } catch (error) {
         this.error = error.response.detail || "Đã xảy ra lỗi.";
       }
