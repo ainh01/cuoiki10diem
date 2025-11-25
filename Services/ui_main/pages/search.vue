@@ -7,20 +7,49 @@ const isFetching = ref<boolean>(true);
 const totalPages = ref<number>(1);
 const currentPage = ref<number>(1);
 
+// 🔍 DEBUG INFO
+const debugInfo = ref({
+  server: '',
+  fullUrl: '',
+  response: null,
+  error: null,
+  timestamp: ''
+});
+
 const route = useRoute();
 const router = useRouter();
 
 const getSearchComics = async () => {
   try {
     isFetching.value = true;
-    const data = await useFetchData(
-      `/tim-kiem?keyword=${query.value}&page=${currentPage.value}`
-    );
-    comics = data.data.items;
-    console.log(data);
+    
+    // 🔍 CAPTURE DEBUG INFO
+    const timestamp = new Date().toISOString();
+    const endpoint = `/tim-kiem?keyword=${query.value}&page=${currentPage.value}`;
+    
+    debugInfo.value = {
+      server: window.location.origin,
+      fullUrl: `${window.location.origin}${endpoint}`,
+      response: null,
+      error: null,
+      timestamp
+    };
+
+    console.log('🔍 REQUEST:', debugInfo.value);
+
+    const data = await useFetchData(endpoint);
+    
+    // 🔍 CAPTURE RESPONSE
+    debugInfo.value.response = data;
+    console.log('✅ RESPONSE:', data);
+    
+    // ⚠️ FIX: Should be comics.value not comics
+    comics.value = data.data.items;
     totalPages.value = data?.total_pages;
+    
   } catch (err) {
-    console.log(err);
+    console.error('❌ ERROR:', err);
+    debugInfo.value.error = err;
   } finally {
     isFetching.value = false;
   }
@@ -35,9 +64,10 @@ const handleChangePage = (page: number) => {
   router.replace({ query: { ...route.query, page } });
 };
 
+// ⚠️ FIX: Watch for 'keyword' not 'q'
 watch(route, async (route) => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  query.value = route.query.q as string;
+  query.value = route.query.keyword as string; // Changed from 'q' to 'keyword'
   currentPage.value = route.query.page ? Number(route.query.page) : 1;
   await getSearchComics();
 });
@@ -50,21 +80,46 @@ watch(route, async (route) => {
     <Meta name="description" content="Free comic and manga reader online" />
   </Head>
   <main class="max-w-6xl mx-auto min-h-screen py-6 px-3">
-    <div
-      class="flex items-center flex-wrap gap-1 text-gray-500 font-bold text-lg"
-    >
+    
+    <!-- 🔍 DEBUG PANEL -->
+    <div class="bg-yellow-100 border-2 border-yellow-500 p-4 mb-6 rounded-lg">
+      <h2 class="text-xl font-bold mb-2">🔍 DEBUG INFO</h2>
+      <div class="space-y-2 text-sm font-mono">
+        <p><strong>Server:</strong> {{ debugInfo.server }}</p>
+        <p><strong>Full URL:</strong> {{ debugInfo.fullUrl }}</p>
+        <p><strong>Query Param:</strong> {{ query }}</p>
+        <p><strong>Current Page:</strong> {{ currentPage }}</p>
+        <p><strong>Time:</strong> {{ debugInfo.timestamp }}</p>
+        <p><strong>Total Pages:</strong> {{ totalPages }}</p>
+        <p><strong>Comics Count:</strong> {{ comics.length }}</p>
+        
+        <details class="mt-2">
+          <summary class="cursor-pointer font-bold text-blue-600">📦 Raw Response Data</summary>
+          <pre class="bg-white p-2 rounded mt-2 overflow-auto max-h-60">{{ JSON.stringify(debugInfo.response, null, 2) }}</pre>
+        </details>
+        
+        <details v-if="debugInfo.error" class="mt-2">
+          <summary class="cursor-pointer font-bold text-red-600">❌ Error</summary>
+          <pre class="bg-white p-2 rounded mt-2 overflow-auto">{{ debugInfo.error }}</pre>
+        </details>
+      </div>
+    </div>
+
+    <div class="flex items-center flex-wrap gap-1 text-gray-500 font-bold text-lg">
       <NuxtLink to="/">Home</NuxtLink>
       <Icon name="icon-park:right" size="16" />
       <span>Kết quả tìm kiếm</span>
       <Icon name="icon-park:right" size="16" />
       <span class="text-black">{{ query }}</span>
     </div>
+
     <h4
       class="text-2xl text-center mt-8 font-bold text-gray-600"
       v-show="!isFetching && !comics.length"
     >
       No result
     </h4>
+
     <ul class="grid grid-cols-1 md:grid-cols-2 gap-6 py-5">
       <template v-if="isFetching">
         <li
@@ -88,9 +143,6 @@ watch(route, async (route) => {
           <div class="text-gray-500 font-bold w-full">
             <h3 class="text-lg text-black leading-5">
               {{ comic.name }}
-              <!-- <span class="text-sm text-gray-500">
-                ({{ comic.chaptersLatest?.fileName || 'Updating' }})
-              </span> -->
             </h3>
             <p class="flex items-center gap-1 text-emerald-500">
               <template v-if="Array.isArray(comic.origin_name)">
@@ -104,9 +156,6 @@ watch(route, async (route) => {
                 {{ comic.origin_name }}
               </template>
             </p>
-            <!-- <p class="text-sm line-clamp-2 font-semibold">
-              {{ comic.short_description }}
-            </p> -->
             <ul class="text-sm flex items-center flex-wrap gap-2 mt-1">
               <li
                 v-for="genre in comic.category"
