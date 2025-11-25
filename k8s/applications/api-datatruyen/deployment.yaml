@@ -18,3 +18,12 @@ spec:
         image: webtruyenacr2855.azurecr.io/api-datatruyen:latest
         ports:
         - containerPort: 8000
+        env:
+        - name: MONGODB_DATA_API
+          value: "mongodb+srv://ainh01:Bb1234567890!@ainh.global.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000"
+        - name: MONGODB_DATA_DB
+          value: "CNPM_truyentranh_db"
+        - name: EXTERNAL_API
+          value: "http://4.230.96.180/api/datatruyen/"
+        - name: IMAGE_API
+          value: "https://sv1.otruyencdn.com/v1/api/"
