@@ -48,10 +48,10 @@ jobs:
       working-directory: ./Services/api_datatruyen
       run: |
         docker build \
-          --build-arg MONGODB_DATA_API=${{ secrets.MONGODB_DATA_API }} \
-          --build-arg MONGODB_DATA_DB=${{ secrets.MONGODB_DATA_DB }} \
-          --build-arg EXTERNAL_API=${{ secrets.EXTERNAL_API }} \
-          --build-arg IMAGE_API=${{ secrets.IMAGE_API }} \
+          --build-arg "MONGODB_DATA_API=${{ secrets.MONGODB_DATA_API }}" \
+          --build-arg "MONGODB_DATA_DB=${{ secrets.MONGODB_DATA_DB }}" \
+          --build-arg "EXTERNAL_API=${{ secrets.EXTERNAL_API }}" \
+          --build-arg "IMAGE_API=${{ secrets.IMAGE_API }}" \
           -t ${{ secrets.ACR_SERVER }}/api-datatruyen:${{ github.sha }} .
         docker tag ${{ secrets.ACR_SERVER }}/api-datatruyen:${{ github.sha }} ${{ secrets.ACR_SERVER }}/api-datatruyen:latest
         docker push ${{ secrets.ACR_SERVER }}/api-datatruyen:${{ github.sha }}
