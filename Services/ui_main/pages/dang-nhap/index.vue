@@ -22,9 +22,9 @@ export default {
           email: this.email,
           password: this.password,
         });
-        console.log("token:", response.data.token);
+        // console.log("token:", response.data.token);
         // Lưu token vào localStorage
-        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('token', response.token);
 
         window.location.href = "/";
       } catch (error) {
