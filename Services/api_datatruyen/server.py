@@ -31,7 +31,12 @@ EXTERNAL_API_BASE_URL = os.getenv('EXTERNAL_API','mongodb://localhost:27017')
 # EXTERNAL_API_BASE_URL = "https://otruyenapi.com/v1/api/"
 IMAGE_API_BASE_URL = os.getenv('IMAGE_API', 'https://otruyenapi.com/vi/api/')
 
-app = FastAPI()
+app = FastAPI(
+    title="Datatruyen API",
+    description="API Description",
+    version="1.0.0",
+    root_path="/api/datatruyen" 
+)
 
 app.add_middleware(
     CORSMiddleware,
