@@ -4,7 +4,6 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
-    "healthcheck": "node -e \"require('http').get('http://127.0.0.1:3000/health', res => { if(res.statusCode===200) { console.log('OK'); process.exit(0) } else { console.error('UNHEALTHY - status: ' + res.statusCode); process.exit(1) } })\"",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
