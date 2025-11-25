@@ -23,7 +23,7 @@ onMounted(async () => {
       token.value = localStorage.getItem("token");
       
       if (token.value) {
-        const response = await axios.get(`${API_BASE_URL}/user/`, {
+        const response = await axios.get(`${API_BASE_URL}user/`, {
           headers: {
             Authorization: `Bearer ${token.value}`,
           },
