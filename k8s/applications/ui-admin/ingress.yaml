@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ui-admin
+  namespace: default
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /admin
+        pathType: Prefix
+        backend:
+          service:
+            name: ui-admin
+            port:
+              number: 3000

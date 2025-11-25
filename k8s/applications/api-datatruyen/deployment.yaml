@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-datatruyen
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api-datatruyen
+  template:
+    metadata:
+      labels:
+        app: api-datatruyen
+    spec:
+      containers:
+      - name: api-datatruyen
+        image: webtruyenacr2855.azurecr.io/api-datatruyen:latest
+        ports:
+        - containerPort: 8000
