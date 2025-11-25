@@ -50,9 +50,9 @@ jobs:
       working-directory: ./Services/ui_main
       run: |
         docker build \
-          --build-arg VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }} \
-          --build-arg VITE_OTRUYEN_API_BASE_URL=${{ secrets.VITE_OTRUYEN_API_BASE_URL }} \
-          --build-arg VITE_APP_ENV=${{ secrets.VITE_APP_ENV }} \
+          --build-arg "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" \
+          --build-arg "VITE_OTRUYEN_API_BASE_URL=${{ secrets.VITE_OTRUYEN_API_BASE_URL }}" \
+          --build-arg "VITE_APP_ENV=${{ secrets.VITE_APP_ENV }}" \
           -t ${{ secrets.ACR_SERVER }}/ui-main:${{ github.sha }} .
         docker tag ${{ secrets.ACR_SERVER }}/ui-main:${{ github.sha }} ${{ secrets.ACR_SERVER }}/ui-main:latest
         docker push ${{ secrets.ACR_SERVER }}/ui-main:${{ github.sha }}
