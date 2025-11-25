@@ -3,19 +3,15 @@ import { meta } from '@/utils/data';
 
 const extractComicsData = (response: any) => {
   if (!response) return [];
-  
   if (response.items && Array.isArray(response.items)) {
     return response.items;
   }
-  
   if (response.data?.items && Array.isArray(response.data.items)) {
     return response.data.items;
   }
-  
   if (Array.isArray(response)) {
     return response;
   }
-  
   return [];
 };
 
