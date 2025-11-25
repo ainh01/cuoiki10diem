@@ -48,7 +48,7 @@ jobs:
       working-directory: ./Services/ui_admin
       run: |
         docker build \
-          --build-arg BASE_URL=${{ secrets.BASE_URL }} \
+          --build-arg "BASE_URL=${{ secrets.BASE_URL }}" \
           -t ${{ secrets.ACR_SERVER }}/ui-admin:${{ github.sha }} .
         docker tag ${{ secrets.ACR_SERVER }}/ui-admin:${{ github.sha }} ${{ secrets.ACR_SERVER }}/ui-admin:latest
         docker push ${{ secrets.ACR_SERVER }}/ui-admin:${{ github.sha }}
