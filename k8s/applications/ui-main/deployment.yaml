@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui-main
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ui-main
+  template:
+    metadata:
+      labels:
+        app: ui-main
+    spec:
+      containers:
+      - name: ui-main
+        image: webtruyenacr2855.azurecr.io/ui-main:latest
+        ports:
+        - containerPort: 3000

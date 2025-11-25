@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-otruyen
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api-otruyen
+  template:
+    metadata:
+      labels:
+        app: api-otruyen
+    spec:
+      containers:
+      - name: api-otruyen
+        image: webtruyenacr2855.azurecr.io/api-otruyen:latest
+        ports:
+        - containerPort: 8001
