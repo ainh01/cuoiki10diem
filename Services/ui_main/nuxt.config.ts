@@ -11,7 +11,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       // baseURL: 'https://otruyenapi.com/v1/api',
-      baseURL: process.env.VITE_OTRUYEN_API_BASE_URL,
+      baseURL: '/api/otruyen' ,
     },
   },
 

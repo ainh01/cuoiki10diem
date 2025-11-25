@@ -9,7 +9,8 @@ const currentPage = ref<number>(1);
 
 // 🔍 DEBUG INFO
 const debugInfo = ref({
-  server: '',
+  baseURL: '',
+  endpoint: '',
   fullUrl: '',
   response: null,
   error: null,
@@ -23,16 +24,17 @@ const getSearchComics = async () => {
   try {
     isFetching.value = true;
     
-    // 🔍 CAPTURE DEBUG INFO
-    const timestamp = new Date().toISOString();
+    const config = useRuntimeConfig();
     const endpoint = `/tim-kiem?keyword=${query.value}&page=${currentPage.value}`;
     
+    // 🔍 CAPTURE DEBUG INFO
     debugInfo.value = {
-      server: window.location.origin,
-      fullUrl: `${window.location.origin}${endpoint}`,
+      baseURL: config.public.baseURL,
+      endpoint: endpoint,
+      fullUrl: `${config.public.baseURL}${endpoint}`,
       response: null,
       error: null,
-      timestamp
+      timestamp: new Date().toISOString()
     };
 
     console.log('🔍 REQUEST:', debugInfo.value);
@@ -43,7 +45,7 @@ const getSearchComics = async () => {
     debugInfo.value.response = data;
     console.log('✅ RESPONSE:', data);
     
-    // ⚠️ FIX: Should be comics.value not comics
+    // ✅ FIX: Use .value
     comics.value = data.data.items;
     totalPages.value = data?.total_pages;
     
@@ -64,10 +66,9 @@ const handleChangePage = (page: number) => {
   router.replace({ query: { ...route.query, page } });
 };
 
-// ⚠️ FIX: Watch for 'keyword' not 'q'
 watch(route, async (route) => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  query.value = route.query.keyword as string; // Changed from 'q' to 'keyword'
+  query.value = route.query.keyword as string;
   currentPage.value = route.query.page ? Number(route.query.page) : 1;
   await getSearchComics();
 });
@@ -85,16 +86,17 @@ watch(route, async (route) => {
     <div class="bg-yellow-100 border-2 border-yellow-500 p-4 mb-6 rounded-lg">
       <h2 class="text-xl font-bold mb-2">🔍 DEBUG INFO</h2>
       <div class="space-y-2 text-sm font-mono">
-        <p><strong>Server:</strong> {{ debugInfo.server }}</p>
-        <p><strong>Full URL:</strong> {{ debugInfo.fullUrl }}</p>
-        <p><strong>Query Param:</strong> {{ query }}</p>
-        <p><strong>Current Page:</strong> {{ currentPage }}</p>
-        <p><strong>Time:</strong> {{ debugInfo.timestamp }}</p>
+        <p><strong>Base URL:</strong> <span class="text-purple-600">{{ debugInfo.baseURL }}</span></p>
+        <p><strong>Endpoint:</strong> <span class="text-blue-600">{{ debugInfo.endpoint }}</span></p>
+        <p><strong>Full URL:</strong> <span class="text-green-600">{{ debugInfo.fullUrl }}</span></p>
+        <p><strong>Expected:</strong> <span class="text-red-600">/api/otruyen/tim-kiem?keyword={{ query }}&page={{ currentPage }}</span></p>
+        <p><strong>Query:</strong> {{ query }}</p>
+        <p><strong>Page:</strong> {{ currentPage }}</p>
         <p><strong>Total Pages:</strong> {{ totalPages }}</p>
-        <p><strong>Comics Count:</strong> {{ comics.length }}</p>
+        <p><strong>Comics:</strong> {{ comics.length }}</p>
         
         <details class="mt-2">
-          <summary class="cursor-pointer font-bold text-blue-600">📦 Raw Response Data</summary>
+          <summary class="cursor-pointer font-bold text-blue-600">📦 Raw Response</summary>
           <pre class="bg-white p-2 rounded mt-2 overflow-auto max-h-60">{{ JSON.stringify(debugInfo.response, null, 2) }}</pre>
         </details>
         
