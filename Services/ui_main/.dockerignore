@@ -6,3 +6,6 @@ yarn-error.log
 .dockerignore
 Dockerfile
 README.md
+.nuxt
+.output
+dist
