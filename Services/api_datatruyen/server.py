@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.responses import JSONResponse, StreamingResponse
 from motor.motor_asyncio import AsyncIOMotorClient
+from fastapi.openapi.utils import get_openapi
 from pydantic import BaseModel, EmailStr
 from passlib.context import CryptContext
 import httpx
@@ -137,6 +138,38 @@ async def get_current_user(authorization: str = Header(None)):
         )
     except jwt.JWTError:
         raise credentials_exception
+
+# Thêm hàm custom OpenAPI schema
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    
+    openapi_schema = get_openapi(
+        title="Datatruyen API",
+        version="1.0.0",
+        description="API Description",
+        routes=app.routes,
+    )
+    
+    # Thêm security scheme manual
+    openapi_schema["components"]["securitySchemes"] = {
+        "Bearer": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT"
+        }
+    }
+    
+    # Thêm security requirement cho các endpoint cần auth
+    for path, methods in openapi_schema["paths"].items():
+        for method, operation in methods.items():
+            if path == "/user/" and method == "get":  # Chỉ endpoint cần auth
+                operation["security"] = [{"Bearer": []}]
+    
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+app.openapi = custom_openapi
 
 @app.post("/register/")
 async def register(user: User):
