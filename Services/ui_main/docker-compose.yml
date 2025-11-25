@@ -8,7 +8,7 @@ services:
       - "3000:3000"
     environment:
       # Use key: value format to avoid quote parsing issues
-      - VITE_API_BASE_URL=http://134.185.90.103:8080/
-      - VITE_OTRUYEN_API_BASE_URL=http://134.185.90.103:80/
+      - VITE_API_BASE_URL=http://4.230.96.180/api/otruyen/
+      - VITE_OTRUYEN_API_BASE_URL=http://4.230.96.180/api/datatruyen/
       - VITE_APP_ENV=development
     restart: unless-stopped
