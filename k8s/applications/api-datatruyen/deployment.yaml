@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: api-datatruyen
-        image: webtruyenacr2855.azurecr.io/api-datatruyen:3f661eb41387140e064543a8b53820f4b7d6fd9b
+        image: webtruyenacr2855.azurecr.io/api-datatruyen:d2e44b6b7f4e27a638765b255fd9fc5baca72d3f
         ports:
         - containerPort: 8000
         env:
