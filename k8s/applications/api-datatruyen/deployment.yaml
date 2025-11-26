@@ -4,7 +4,7 @@ metadata:
   name: api-datatruyen
   namespace: default
 spec:
-  replicas: 3
+  replicas: 5
   selector:
     matchLabels:
       app: api-datatruyen
